@@ -1,6 +1,6 @@
 import discord 
 
-<<<<<<< HEAD
+
 # Not gonna commit my token.
 f = open("secretstuff", "r")
 token = f.read()
