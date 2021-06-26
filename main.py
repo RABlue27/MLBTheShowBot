@@ -82,6 +82,7 @@ async def on_message(message):
         investments.append(user_investment)
         return
 
+    # Test command 
     if message.content.startswith(commandSign + "print"):
         investments[0].print_investment()
 
