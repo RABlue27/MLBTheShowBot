@@ -3,6 +3,7 @@ from asyncio.tasks import wait_for
 import discord
 from discord import user
 from discord import channel 
+import csv
 
 class Investment:
     def __init__(self, id, invests) -> None:
@@ -19,13 +20,21 @@ token = f.readline()
 commandSign = f.readline()
 
 print(commandSign)
-investments = [] #array of investments 
-print(investments)
+
 
 client = discord.Client()
 @client.event 
 async def on_ready():
     print("Login success.")
+
+async def write_to_csv(investment):
+    with open("investmentsheet.txt", 'a') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        l = []
+        l.append(investment.id)
+        l.append(investment.invests)
+        csvwriter.writerow(l)
+
 
 
 #TODO: allow abortion, also check user ID to make sure they arent making multiple investments
@@ -59,6 +68,7 @@ async def on_message(message):
 
         #Theres gotta be a better way to do this, but async in a for loop doesnt seem to work
 
+
         count_to = int(count_to.content)
         await message.channel.send("Please make your first selection. ")
         card = await client.wait_for('message', check=check, timeout=120)
@@ -77,14 +87,10 @@ async def on_message(message):
             card = card.content
             user_investment.invests.append(card)
 
-        print("Exited the loop")
+        await write_to_csv(user_investment)
+        
 
-        investments.append(user_investment)
-        return
 
-    # Test command 
-    if message.content.startswith(commandSign + "print"):
-        investments[0].print_investment()
 
 
 
