@@ -79,7 +79,7 @@ async def on_message(message):
         user_investment = Investment(message.author.id, []) #create out investment object
         # user_investment.print()
 
-        #TODO: Als error checking here
+        #TODO: Also error checking here
         print("entering for loop with iterations of ", int(count_to.content))
 
         #Theres gotta be a better way to do this, but async in a for loop doesnt seem to work
