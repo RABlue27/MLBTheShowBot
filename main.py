@@ -15,7 +15,7 @@ class Investment:
 
 #TODO: Write to file to change command sign
 
-f = open("secretstuff", "r")
+f = open("secretstuff.txt", "r")
 token = f.readline()
 commandSign = f.readline()
 
@@ -28,16 +28,26 @@ async def on_ready():
     print("Login success.")
 
 async def write_to_csv(investment):
-    with open("investmentsheet.txt", 'a') as csvfile:
+    with open("investmentsheet.csv", 'a') as csvfile:
         csvwriter = csv.writer(csvfile)
         l = []
         l.append(investment.id)
         l.append(investment.invests)
         csvwriter.writerow(l)
 
+#Check to make sure user ID isn't in the CSV
+async def check_for_id(id):
+    with open("investmentsheet.csv", "rt") as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            for field in row:
+                if int(field) == int(id):
+                    return True
+    return False
 
 
-#TODO: allow abortion, also check user ID to make sure they arent making multiple investments
+#TODO: allow abortion
+#Main juice of the program
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -47,6 +57,11 @@ async def on_message(message):
         return m.author == message.author and m.channel == message.channel
 
     if message.content.startswith(commandSign + "invest"):
+
+        if (await check_for_id(message.author.id)):
+            await message.channel.send("You've already made your weekly prediction, sorry!")
+            return
+
         await message.channel.send('Welcome to the investing bot!')
         await message.channel.send("Tell me how many players would you like to invest in? 1, 2 or 3?")
         count_to = await client.wait_for('message',check=check , timeout=120)
