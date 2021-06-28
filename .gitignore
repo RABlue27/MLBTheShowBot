@@ -1,4 +1,4 @@
 #ignore txt file 
 *.txt 
 *.config 
-.csv
+*.csv
