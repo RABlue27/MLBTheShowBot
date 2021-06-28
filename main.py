@@ -15,9 +15,9 @@ class Investment:
 
 #TODO: Write to file to change command sign
 
-f = open("secretstuff.txt", "r")
-token = f.readline()
-commandSign = f.readline()
+with open("secretstuff.txt", "r") as f:
+    token = f.readline()
+    commandSign = f.readline()
 
 print(commandSign)
 
