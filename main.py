@@ -86,23 +86,13 @@ async def on_message(message):
 
 
         count_to = int(count_to.content)
-        await message.channel.send("Please make your first selection. ")
-        card = await client.wait_for('message', check=check, timeout=120)
-        card = card.content
-        user_investment.invests.append(card)
-        # print(user_investment)
-        
-        if (count_to >= 2):
-            await message.channel.send("Please make your second selection. ")
-            card = await client.wait_for('message', check=check, timeout=120)
-            card = card.content
-            user_investment.invests.append(card)
-        if (count_to == 3):
-            await message.channel.send("Please make your third selection. ")
+        for i in range(count_to):
+            await message.channel.send("Please make your selection selection. ")
             card = await client.wait_for('message', check=check, timeout=120)
             card = card.content
             user_investment.invests.append(card)
 
+        
         await write_to_csv(user_investment)
         
 # TODO: Finish code to read roster update      
