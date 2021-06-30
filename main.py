@@ -56,14 +56,12 @@ async def check_for_id(id):
                     return True
     return False
 
-
 # TODO: allow abortion, typo fixing
 # Main juice of the program
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-        
     if message.content.startswith(commandSign + "lastupdate"):
         await lastupdate()
         return
@@ -126,7 +124,8 @@ async def lastupdate():
     update = roster_update() #This should be a dictionary with name, new and old rank. 
     await find_biggest_gainers(update)
 
-# TODO: Someone please make this functon work
+# Returns list of Players.
+# Players have a name and rating change.
 async def find_biggest_gainers(update):
     winners = {}
     return winners
@@ -136,7 +135,6 @@ def beutify_update(update):
     for i in range(0, len(update), 3):
         player = Player(update[i], update[i+1] - update[i+2])
         player_list.append(player)
-    return player_list
-
+        player.print()
 
 client.run(token)
