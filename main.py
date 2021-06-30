@@ -5,23 +5,23 @@ from asyncio.events import TimerHandle
 from asyncio.tasks import wait_for
 from discord import user
 from discord import channel 
+from discord.ext import commands
+import json
 class Investment:
-    def __init__(self, id, invests) -> None:
+    def __init__(self, id, invests):
         self.id = id
         self.invests = invests
 
     def print_investment(self):
         print(self.id, self.invests)
 
-#This seems really overengineered
 class Player:
     def __init__(self, name, change):
         self.name = name
         self.change = change
-    
+        
     def print(self):
-        print(self.name, self.change)
-    
+        print("Name:", self.name, " Attribute change: ", self.change)
 
 #TODO: Write to file to change command sign
 
@@ -29,14 +29,14 @@ with open("secretstuff.txt", "r") as f:
     token = f.readline()
     commandSign = f.readline()
 
-print(commandSign)
 
-
+bot = commands.Bot(command_prefix=commandSign)
 client = discord.Client()
 @client.event 
 async def on_ready():
     print("Login success.")
-
+    await lastupdate()
+    
 
 async def write_to_csv(investment):
     with open("investmentsheet.csv", 'a') as csvfile:
@@ -63,13 +63,10 @@ async def check_for_id(id):
 async def on_message(message):
     if message.author == client.user:
         return
-<<<<<<< Updated upstream
-=======
         
     if message.content.startswith(commandSign + "lastupdate"):
         await lastupdate()
         return
->>>>>>> Stashed changes
 
     def check(m):
         return m.author == message.author and m.channel == message.channel
@@ -87,20 +84,15 @@ async def on_message(message):
         #TODO: Error checking here
 
         while int(count_to.content) < 0 or int(count_to.content) > 3:
-
             await message.channel.send("Please follow simple instructions in the future.")
             await message.channel.send("Select either 1, 2, or 3 players to invest in.")
             count_to = await client.wait_for('message',check=check , timeout=120)
 
         await message.channel.send("You will be investing in " + count_to.content + " players.")
         user_investment = Investment(message.author.id, []) #create out investment object
-        # user_investment.print()
 
         #TODO: Also error checking here
         print("entering for loop with iterations of ", int(count_to.content))
-
-        #Theres gotta be a better way to do this, but async in a for loop doesnt seem to work
-
 
         count_to = int(count_to.content)
         for i in range(count_to):
@@ -108,42 +100,43 @@ async def on_message(message):
             card = await client.wait_for('message', check=check, timeout=120)
             card = card.content
             user_investment.invests.append(card)
-
         
         await write_to_csv(user_investment)
         
-# TODO: Finish code to read roster update      
-# ? Does it have to be async? Does it matter?  
+# TODO: Finish code to read roster update        
 def roster_update():
     url = "http://mlb21.theshow.com/apis/roster_update.json?id=1"
-    resp = requests.get(url)
-    calc_score(resp)
+    print("Request from: ", url)
+    rq = requests.get(url)
+    rq = rq.json()    
+    rq = rq['attribute_changes']    # keys = ["name", "current_rank", "old_rank"]
+    important_keys = []
+    for i in rq:
+        important_keys.append(i["name"])
+        important_keys.append(i["current_rank"])
+        important_keys.append(i["old_rank"])
+    return beutify_update(important_keys)
 
-# TODO: Go through the entire CSV to identify score. Give role to best player.
-async def calc_score(resp):
-    return 
 
-<<<<<<< Updated upstream
-=======
-# Creates a list with following syntax:
-# [NAME, OLD RANK, NEW RANK]
-# Call this function in discord 
+# Lastupdate calls roster update
+# Roster update calls beutify update
+# Beutify update calls finds biggest gainers with a simple list 
+# Of Player objects. Player objects have a name and a attribute change.
 async def lastupdate():
     update = roster_update() #This should be a dictionary with name, new and old rank. 
     await find_biggest_gainers(update)
 
 # TODO: Someone please make this functon work
 async def find_biggest_gainers(update):
+    winners = {}
+    return winners
+
+def beutify_update(update):
     player_list = [] #List of Player objects
     for i in range(0, len(update), 3):
         player = Player(update[i], update[i+1] - update[i+2])
         player_list.append(player)
-        player.print()
+    return player_list
 
 
-
-
-
-
->>>>>>> Stashed changes
 client.run(token)
