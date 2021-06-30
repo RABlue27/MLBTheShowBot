@@ -56,20 +56,15 @@ async def check_for_id(id):
                     return True
     return False
 
-
 # TODO: allow abortion, typo fixing
 # Main juice of the program
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-<<<<<<< Updated upstream
-=======
-        
     if message.content.startswith(commandSign + "lastupdate"):
         await lastupdate()
         return
->>>>>>> Stashed changes
 
     def check(m):
         return m.author == message.author and m.channel == message.channel
@@ -123,8 +118,6 @@ def roster_update():
 async def calc_score(resp):
     return 
 
-<<<<<<< Updated upstream
-=======
 # Creates a list with following syntax:
 # [NAME, OLD RANK, NEW RANK]
 # Call this function in discord 
@@ -132,7 +125,8 @@ async def lastupdate():
     update = roster_update() #This should be a dictionary with name, new and old rank. 
     await find_biggest_gainers(update)
 
-# TODO: Someone please make this functon work
+# Returns list of Players.
+# Players have a name and rating change.
 async def find_biggest_gainers(update):
     player_list = [] #List of Player objects
     for i in range(0, len(update), 3):
@@ -140,10 +134,4 @@ async def find_biggest_gainers(update):
         player_list.append(player)
         player.print()
 
-
-
-
-
-
->>>>>>> Stashed changes
 client.run(token)
