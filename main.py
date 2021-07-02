@@ -41,9 +41,7 @@ async def on_ready():
 async def write_to_csv(investment):
     with open("investmentsheet.csv", 'a') as csvfile:
         csvwriter = csv.writer(csvfile)
-        l = []
-        l.append(investment.id)
-        l.append(investment.invests)
+        l = [investment.id, investment.invests]
         csvwriter.writerow(l)
 
 # Check to make sure user ID isn't in the CSV
@@ -127,8 +125,7 @@ async def lastupdate():
 # Returns list of Players.
 # Players have a name and rating change.
 async def find_biggest_gainers(update):
-    winners = {}
-    return winners
+    return {}
 
 def beutify_update(update):
     player_list = [] #List of Player objects
